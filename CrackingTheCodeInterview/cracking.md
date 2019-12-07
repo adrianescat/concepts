@@ -318,7 +318,16 @@ Ejercicio: dado un array de números donde pueden repetirse, devolver el número
 https://repl.it/@AdrianE1/firstRecurringCharacter
 
 #### Linked lists
-//TODO
+Cabeza, cola y punteros.
+Los elementos no están indexados como en un Array o Hash Map. Los elementos están dispersos por toda la memoria,
+no están al lado del otro como con un array. Con esto ya sabemos que es más lento iterar una lista que un array.
+Pero lo que tiene de bueno, son los inserts ya que no tenemos que reindexar todo cuando ingresa un nuevo elemento, sino que se cambian los punteros y listo. Es mejor que un array en ese sentido aunque sigue siendo `O(n)`, ya que para ingresar o hacer un delete tengo que encontrar primero el index recorriendo la lista.
+
+Puntero: es uan referencia a un espacio en memoria.
+
+Implementación de lista: https://repl.it/@AdrianE1/Data-Structures-Linked-Lists-Implementation-4
+
+Array vs Linked List: https://www.youtube.com/watch?v=DyG9S9nAlUM
 
 #### Stacks
 //TODO
@@ -335,4 +344,94 @@ https://repl.it/@AdrianE1/firstRecurringCharacter
 #### Recursion
 //TODO
 
+### Recursion
+//TODO
+
+### Dynamic programming
+Sólo es una técnica de optimización. Consiste en _caching_ y el midset "divide and conquer".
+por ejemplo: Memoization (guradarse en un hash map resutlados para no volver a calcular un mismo resultado una y otra vez con los mismos parámetros). Lo mejor es usar closures para no tener nuestros objetos de cache globalmente.
+
 ### Sorting
+Viendo este cheat sheet https://www.bigocheatsheet.com/ tenemos varios algoritmos de ordenamiento.
+Los más comunes podrían ser:
+- Bubble Sort
+- Insertion Sort
+- Selection Sort
+
+Pero si analizamos los casos que más nos interesa que son average/worst son de `O(n^2)`.
+
+Vayamos directo a algoritmos `O(n * log n)`:
+- Quick Sort (en el peor de los casos es `O(n^2)`)
+- Merge Sort
+- Heap Sort
+- Tim Sort
+
+#### Merge Sort
+Va dividiendo el array (input) en partes iguales hasta tener todos los elementos aislados. Luego va comparandolos y mergeando creando nuevos arrays hasta tener 1 solo todo ordenado. Esta sería una implementación:
+https://repl.it/@AdrianE1/mergeSort
+
+_Nadie va a pedirte que implementes un Merge Sort en una entrevista, vale conocer su complejidad y de qué va el algoritmo_
+
+Algoritmos estables vs inestables: _A sorting algorithm is said to be stable if two objects with equal keys appear in the same order in sorted output as they appear in the input array to be sorted. Some sorting algorithms are stable by nature like Insertion sort, Merge Sort, Bubble Sort, etc. And some sorting algorithms are not, like Heap Sort, Quick Sort, etc._ https://stackoverflow.com/questions/1517793/what-is-stability-in-sorting-algorithms-and-why-is-it-important
+
+#### Quick Sort
+Usa la técnica de pivoteo, elige al azar un elemento como pivote y va comparando desde el inicio del array, si encuentra elementos que tienen que ir a la derecha de él, va desplazandolos a su derecha, desplazando también el número que estaba previamente a su izquierda y poniéndolo de donde se sacó el número que se movio a la derecha del pivote. Así sucesivamente hasta que no tenga más. Cuando llega ese momento, significa que el pivote está en su ubicación correcta. Ahí utiliza el mecanismo (como el Merge Sort) de "divide y ganarás". Forma 2 nuevas colecciones a los lados del pivote, y pivotea nuevamente en esas nuevas colecciones y así sucesivamente.
+Implementación del Quick Sort: https://repl.it/@AdrianE1/quickSort
+
+Quick Sort vs Merge Sort: Merge Sort en el peor de los casos, en cuanto a su tome complexity es mejor que el de Quick Sort, pero este último es mejor en cuanto a space complexity en el peor de los casos. Generalmente es uno de los más rápidos el Quick Sort en lineas generales, pero tiene algunos casos donde performa muy mal.
+
+Tenemos otros sorts como Radix y Counting. No realizan comparaciones. Pero no son los más utilizados.
+
+Ejercicio:
+Dados estos casos que sorting usarías.
+
+- Sort 10 schools around your house by distance:
+Insertion sort. Es muy rápido en arrays de pocos elementos.
+
+- eBay sorts listings by the current Bid amount:
+radix or counting sort
+
+- Sport scores on ESPN
+Quick sort. Lo más eficiente, con el Merge podría usar mucha memoria.
+
+- Massive database (can't fit all into memory) needs to sort through past year's user data
+Merge Sort
+
+- Almost sorted Udemy review data needs to update and add 2 new reviews
+Insertion Sort
+
+- Temperature Records for the past 50 years in Canada
+radix or counting Sort
+Quick sort if decimal places
+
+- Large user name database needs to be sorted. Data is very random.
+Quick sort
+
+- You want to teach sorting
+Bubble sort
+
+Para JavaScript no hay limitaciones en cuanto al algoritmo que se implementa para el sorting. Eso quiere decir que los browsers o motores tienen distintas implementaciones. Lo último que se sabe (porque esto puede ir cambiando con las versiones de browsers y motores) es que en mozilla por ejemplo se utiliza Merge Sort y en Chrome y V8 se utiliza Quick Sort / Insertion Sort (para arrays chicos).
+
+Esto quiere decir que si usamos el método de Array `.sort()` vamos a estar utilizando Merge Sort, Quick Sort e Insertion Sort para casos felices. Ya lo implementaron por nosotros, no tenemos que realizar nuestras propias implementaciones.
+
+Sort: https://developer.mozilla.org/es/docs/Web/JavaScript/Referencia/Objetos_globales/Array/sort
+
+`arr.sort([compareFunction])`
+
+Si no se provee compareFunction, los elementos son ordenados convirtiéndolos a strings y comparando la posición del valor Unicode de dichos strings
+
+Si se provee compareFunction, los elementos del array son ordenados de acuerdo al valor que retorna dicha función de comparación. Siendo a y b dos elementos comparados, entonces:
+
+- Si `compareFunction(a, b)` es menor que 0, se sitúa a en un indice menor que b. Es decir, a viene primero.
+- Si compareFunction(a, b) retorna 0, se deja a y b sin cambios entre ellos, pero ordenados con respecto a todos los elementos diferentes. Nota: el estandar ECMAscript no garantiza este comportamiento, por esto no todos los navegadores (p.ej.  Mozilla en versiones que datan hasta el 2003) respetan esto.
+- Si compareFunction(a, b) es mayor que 0, se sitúa b en un indice menor que a.
+
+### Searching
+- Linear Search, recorro el array comparando `O(n)`. El `arr.filter([compareFunction])`, `indexOf`, `find`, `includes` entre otros son así. Es el peor caso, recorremos todo el Array.
+
+- Binary Search `O(log n)`. Nos paramos en el medio y preguntamos si lo que estamos buscando es menor o mayor a lo que está en el medio, de esa forma caes en un grupo reducido y buscás ahí. Lo único necesario para esto, es que el array esté ordenado.
+
+### Non Technical Stuff
+
+- get a raise https://www.youtube.com/watch?v=XY5SeCl_8NE&feature=youtu.be
+- 

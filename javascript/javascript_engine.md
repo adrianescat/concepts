@@ -1,13 +1,13 @@
 ## Motor JavaScript (V8)
 
 Nuestra computadora no entiende javascript, no sabe lo que es, lo único que sabe en verdad es hacer es interpretar "unos" y "ceros". El motor javascript es lo que se interpone entre un archivo `.js` y la PC. Es una especie de "traductor".
-No existe uno solo, de hecho existen muchos motores jaavscript, acá tenemos una lista: https://en.wikipedia.org/wiki/List_of_ECMAScript_engines. Estos motores los llamamos **ECMAScript engine**. https://en.wikipedia.org/wiki/ECMAScript
+No existe uno solo, de hecho existen muchos motores javascript, acá tenemos una lista: https://en.wikipedia.org/wiki/List_of_ECMAScript_engines. Estos motores los llamamos **ECMAScript engine**. https://en.wikipedia.org/wiki/ECMAScript
 
 Estos motores están desarrollados por distintos equipos, personas, empresas etc, ejemplo, V8 está hecho con C++. V8 es el motor javascript escrito por Google. En el 2008 habían motores javascript pero bastante simples, Google por ese entonces necesitaba una mejor solución para su propio explorador (Chrome) y uno de sus productos más complejos: Google Maps. Necesitaban más poder, mejor procesamiento y más rapidez.
 
 --
 
-EL primer motor JS fue creado por Brendan Eich quien trabajaba para Netscape, el primer browser comercial. Él creó lo que es la primer versiópn de un motor al que hoy conocemos como Spider Monkey, motor que utiliza Firefox hasta el día de hoy. Él creó JavaScript.
+EL primer motor JS fue creado por Brendan Eich quien trabajaba para Netscape, el primer browser comercial. Él creó lo que es la primer versión de un motor al que hoy conocemos como Spider Monkey, motor que utiliza Firefox hasta el día de hoy. Él creó JavaScript.
 
 --
 
