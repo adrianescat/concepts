@@ -43,7 +43,7 @@ Luego lo que conviene es utilizar media queries y srcset para mostrar distintas 
 
 2. Delivery optimizations: Primero que nada, enviar lo necesario. Preguntarse si necesitamos enviar libraries gigantes que solo hacen un querySelector por detrás por ejemplo, es decir, tenemos opciones nativas. Hay cierto límite además del peso que se puede enviar de un archivo y de cuantos archivos a la vez se pueden enviar. Combiene a veces ccombinar archivos como tener un "bundle JS", es decir todos nuestros archivos JS concatenados y combinados en un solo archivo. Lo mismo para los CSS. A veces conviene enviar los CSS que se van a mostrar primero y luego enviar los que el usuario va a ver en otras interacciones.
 
-## Critical Rendering Path (CRP)
+### Critical Rendering Path (CRP)
 Con lo anterior ya optimizamos los archivos que se envían al cliente. Ahora, que sucede cuando estos llegan al mismo?
 Cuando llega el HTML, el browser comienza a crear el DOM (document object model). Lo que hace es leer el HTML, tokenizar, parsear los tags y crear el arbol de elementos, esto último es el DOM. Al momento de parsear el DOM, si se encuentra con un tag de tipo <link> y tiene por ejemplo un archivo `css` lo que hace el browser es pedirlo. Una vez que llega sigue parseando el DOM. Al recibir todos los css el broser comienza a crear otro árbol, este es el CSSOM, es el CSS object model. Arma este arbol en base a los tags del DOM. Cuando el parser del broser se encuentra con un archivo JS lo que hace es pedirlo y una vez que llega lo lee, es decir, lo ejecuta. Una vez que termina de armar estos árboles, el browser arma un tercero llamado **Render tree**, este tiene la combinación de ambos árboles. De esta forma sabe renderizar todo.
 Para renderizar en el browser, lo que hace primero es calcular la geografía de los elementos, es decir, el tamaño, ubñicación y cómo se relacionan geográficamente los elementos. Luego de eso pinta los pixeles en la pantalla. Con las imágenes pasa lo mismo, en cuanto encuentra la url comienza a pedirlas pero no es parte del proceso de renderizado, lo hace en background, una vez que son cargadas se muestran en la página.
@@ -59,3 +59,30 @@ Entonces, cómo optimizamos estas intancias?
 4. Render tree: Esta es la etapa siguiente de haber creado el DOM, el CSSOM y de haber encontrado css y JS para descargar y ejecutar. Lo que hay que tener en cuenta es que si luego tenemos un JS que modifica el DOM, lo que causa es un redibujado del render tree y provoca pasar por un layout y paint. Lo que tenemos que hacer es no tratar de manipular el DOM de forma erronea o hacer modificaciones innecesarias. Hay técnicas para evitar relayouts o repaints con css o javascript. React por ejemplo, con el uso del virtual dom, modificando solo las partes necesarias debido a interacciones del usuario o de la aplicación misma, logra cambiar el DOM solo lo necesario.
 5. Hay otras técnicas como prefetch, preconnect, preloading, entre otras. Ver https://css-tricks.com/prefetching-preloading-prebrowsing/
 
+Material importante:
+- Performace Tool: https://developers.google.com/web/tools/chrome-devtools/evaluate-performance/reference
+- https://developers.google.com/web/fundamentals/performance/why-performance-matters
+
+### HTTP/2
+El objetivo de esta nueva versión del protocolo es mejor la latencia de red, es decir, qué tan rápido transmitimos los archivos.
+Recursos: https://developers.google.com/web/fundamentals/performance/http2/?hl=es
+
+### Optimizing code
+Podemos implementar con la ayuda de webpack code splitting, podemos ir importando bloques de código a medida que los necesitamos. Chunks o Chunking. React loadable. React.lazy
+
+### React Performance optimizations
+- En un principio podemos utilizar el query string `?react_perf` y grabar con performance tool el comportamiento de nuestros componentes, con esto podemos evaluar como performa nuestra app y ver como renderizan los componentes, a veces tenemos uan cascada de componentes renderizandose y eso hace que todo sea más lento. Redux nos ayuda a renderizar directamente los componentes necesarios ya que cada uno puede subscribirse al store, no se van pasando props de padre a hijo.
+- Podemos hacer uso de `shouldComponentUpdate` y de PureComponents
+
+### Progressive Web Apps (PWAs)
+Se trata de darle desde una web una experiencia al usuario lo más parecida a una app nativa. Para una web app supongamos que solo necesitamos JS, CSS y HTML. Para crear una app nativa necesitamos un lenguaje nativo como Java, Swift, Android etc. En una web app los assets se consumen a demanda, en una app nativa todos los archivos neccesarios están descargados previamente en el dispositivo. Las apps nativas pueden enviarte push notifications y hasta funcionar sin internet. Por este motivo las apps nativas funcionan mucho mejor que las apps webs en su gran mayoría.
+Acá es donde entran las PWAs.
+listado de PWAs: https://appsco.pe/
+Podemos enfocarnos en 3 cosas que hacen a una PWA (algo más extenso acá https://developers.google.com/web/progressive-web-apps/checklist):
+- HTTPS: Por seguridad y requerido para varias características propias de una PWA. Letsencript es un buen servicio para obtener un certificado.
+- App Manifest: Es un JSON con la configuración necesaria para mostrar la aplicación correctamente, controlar íconos, colores, nombre de la app y muchas más cosas.
+- Service Workers. _ver abajo el concepto_
+
+Service Workers: Es un script que corre el browser en el background aparte de la aplicación. Es usado generalmente para features que no necesitan una página o la interacción del usuario. Esta herramienta es lo que nos ayuda a que nuestra aplicación funcione offline. La implementación del service worker depende de cada browser. No todos lo soportan. Podemos definir qué archivos queremos que estén en la cache del browser, a medida que va pidiendo un asset nuevo lo guarda en la cache, si vuelve a pedir el mismo el service worker se encarga de interceptar el pedido y entrar el asset antes de realizar un request.
+
+## Tests
