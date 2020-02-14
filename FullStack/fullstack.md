@@ -130,3 +130,34 @@ Web components: https://developers.google.com/web/fundamentals/web-components
 ## Security
 
 ### Injections
+en JS en vez de usar innerHTML deberíamos usar `document.createTextNode(input)` cuando el `input` proviene de forma externa o por el usuario ya que lo que hace el primer método es sanitizar y convertirlo en texto puro por más que tenga JS.
+Qué podemos hacer para evitar injections entonces?
+- Sanitizar inputs, parámetros etc ([validator](https://www.npmjs.com/package/validator))
+- Parametrizar queries. No queriar directo con el input del usuario
+- Usar ORMs o Knex.js
+
+### 3rd party libraries
+Hay una gran variedad de herramientas que permiten auditar libraries.
+La idea es siempre saber lo que uno incluye en el proyecto, ver github, las starsm los forks etc.
+
+### Logging
+Llevar un registro. Hay paquetes muy buenos como winston o morgan
+
+### HTTPS Everywhere
+Protocolo encriptado de comunicación, no pueden intrometerse terceros. Certificados gratis en https://letsencrypt.org/
+
+### XSS & CSRF
+Ejecutar código en un sitio ajeno. Lo más frecuente es robarse la información del usuario, lo que se encuentra en sus cookies.
+El segundo es cross site request forgery, es hacer que un usuario haga algo por nosotros. Para evitarlo podemos setear un header llamado `Content-Security-Policy` y configurar cuales son los endpoints en los que confiamos para hacer requests.
+
+### Code secrets
+No mostrar keys o información crítica. Utilizar variables de entorno en le servidor, searializar o tokenizar del lado del cliente.
+
+### Secure headers
+Incluir headers que nos proveen seguridad y buenas técnicas para prevenir hackeos. Hay un paquete muy bueno llamado `helmet`.
+
+### Access Control
+Usar CORS, dar la menor cantidad de permisos posibles.
+
+### Data Management
+Utilizar encriptación tanto en le pasaje de datos críticos en el cliente como en la base de datos, incluso en la data redundante. Hay muchas herramientas como Aragon2, bcrypt pgcrypto etc
