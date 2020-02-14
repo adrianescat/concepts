@@ -86,3 +86,47 @@ Podemos enfocarnos en 3 cosas que hacen a una PWA (algo más extenso acá https:
 Service Workers: Es un script que corre el browser en el background aparte de la aplicación. Es usado generalmente para features que no necesitan una página o la interacción del usuario. Esta herramienta es lo que nos ayuda a que nuestra aplicación funcione offline. La implementación del service worker depende de cada browser. No todos lo soportan. Podemos definir qué archivos queremos que estén en la cache del browser, a medida que va pidiendo un asset nuevo lo guarda en la cache, si vuelve a pedir el mismo el service worker se encarga de interceptar el pedido y entrar el asset antes de realizar un request.
 
 ## Tests
+Los tests se puden dividir en 3 grandes grupos:
+- Unit tests: testeamos de individualmente funciones o clases. Los más fáciles de implementar.
+- Integration tests: testeamos como distintas funciones, clases o servicios funcionan con otras partes de nuestra aplicación.
+- Automation tests: testeamos el correcto funcionamiento en la aplicación o en el browser, simulando interacciones del usuario.
+
+Hay un montón de libraries para testear y dependiendo lo que neccesitemos tendremos que ir descargándolas. Tenemos Jest, Jasmine o Mocha como library que ayuda de scaffolding para los test.
+Luego necesitamos una library para hacer assertions, Jasmine, Jest o Chai pueden funcionar bien.
+Luego necesitamos un runner de tests, Jasmine, Jest, Mocha o Karma funcionan.
+Por otro lado necesitamos Spys, Mocks y Stubs. Jasmine, Jest y Sinon.js funcionan.
+Los spys nos sirven para recaudar información sobre funciones, es decir, cuantas veces se llamó una función, quien la llamó etc
+Los stubs reemplazan funciones específicas por otras funciones para comprobar que tienen el funcionamiento esperado. Fingimos comportamiento pudiendo arrojar dintintos resultados.
+Los Mocks son pra fingir comportamiento.
+Por último necesitaremos una library para ver el code coverage, podemos usar istanbul o jest
+
+Jest parece ser la library más completa.
+Jest cheatsheet: https://github.com/sapegin/jest-cheat-sheet
+
+## SPA vs SSR
+Renderizando client-side el tiempo de render claramente es más largo. Debemos descargar un bundle JS y además no tenemos tanto HTML en el documento inicial. Una vez se descarga el JS, se ejecuta y según el framework utilizado comienza a pintar los pixeles en la pantalla, en el caso de react, creando los componentes y todo lo referente a nuestra APP. El beneficio es que una vez que está esto cargado no debemos ir al server a pedir por más, generalmente tenemos todo precargado en el cliente y logra una experiencia muy rápida. Hay que recurrir a loadings, skeletons etc para cubrir las pantallas blancas.
+
+Para server-side, en el caso de react se utiliza `renderToString` de `react-dom/server` para renderizar en el servidor HTML puro desde un componente <App /> y en el cliente se utiliza `React.hydrate`. Este último no toca el HTML descargado del servidor sino que cargo los event-handlers, si no corremos `hydrate` no es interactivo. Necesitamos el `window` object del browser para attachear eventos, no podemos hacerlo desde el server.
+
+las contras del CSR:
+- tiempo de carga
+- poco potencial SEO
+
+las buenas del CSR:
+- Interacciones fluidas y rápidas
+- Web applications
+
+Las contras del SSR:
+- reloads
+- el rendering es más lento
+- más requests al server
+
+las buenas del SSR:
+- Mucho potencial SEO
+- Renderizado incial muy rápido
+
+Web components: https://developers.google.com/web/fundamentals/web-components
+
+## Security
+
+### Injections
