@@ -161,3 +161,93 @@ Usar CORS, dar la menor cantidad de permisos posibles.
 
 ### Data Management
 Utilizar encriptación tanto en le pasaje de datos críticos en el cliente como en la base de datos, incluso en la data redundante. Hay muchas herramientas como Aragon2, bcrypt pgcrypto etc
+
+## Code Analysis
+En un proyecto node lo que debemos hacer es primero mirar el package.json, ver las dependencias y comenzar a ver las herramientas que utiliza la aplicación. Googlear las que no conocemos.
+Luego deberíamos continuar por el "entry-point", sería el archivo principal que ejecuta node, ahí veremos seguramente la configuración de express o simil, base de datos, rutas etc. Podríamos seguir revisando los endpoints, las rutas para saber como levantar el proyecto y comenzar a obtener respuestas del servidor.
+Mirando las rutas podemos seguir distintos flujos de la aplicación, mirando middlewares, controllers y models.
+
+## Docker
+Para poder correr nuestra aplicación en distintos ambientes de forma correcta, con las versiones de las dependencias correctas sin errores o bugs indeseados que puedan darse en cada máquina, nodo, pc de desarrollador etc existe una solución y son los "contenedores". La mayoría de las aplicaciones hoy en día no se construyen sobre un monolito (una aplicación que lo hace todo) sino que se lo hace desarrollando micro servicios, distintas partes que funcionan independientemente comunicándose entre si. Cada una en su propio container.
+La idea de separar nuestra aplicación en partes pequeñas fue popularizada gracias a servicios de contenedores como docker. Cada uno de estos servicios puede tener sus propias dependencias, configuraciones, distintas versiones de paquetes, de node etc. Además, si tuviésemos que instalar nuestro micro-servicio en una máquina nueva, cada vez que lo hagamos tendríamos que configurar todo el ambiente de desarrollo específico para dicho servicio. No sería ideal instalar todo esto en un solo paso con un solo comando sin preocuparse de las versiones a usar, servicios, paquetes o lo que sea? Esto soluciona docker.
+Qué es un container:
+En un principio tenemos el host, es la máquina donde vamos a alojar nuestro container.
+Luego tenemos el container que se crea con docker. Dentro de este tenemos una "imagen". El host no sabe qué es lo que tiene el container, solo tiene que poder correr docker. La imagen contiene todo lo que el container debe hacer. Lo que se puede tener también es un file-system dentro del container para poder hacer uso de archivos también.
+Tenemos a nustra disposición hub.docker.com donde podemos descargar imágenes pre-configuradas.
+Como el host (el servidor de AWS o nuestra pc) no conoce el container y su contenido, lo que hay que hacer es lo que se llama "port fowarding", que consiste en exponer un puerto desde el container para que el host pueda comunicarse.
+Docker compose es una herramienta de docker que funciona como orquestador, hace el setup de todos los servicios (database, redis, node app etc) con un solo comando.
+Para mapear los archivos locales a los que tiene el container, lo que podemos hacer es crear volúmenes. Si hacemos cambios en los archivos locales se cambian también en el container.
+
+## Redis
+NoSQL en memoria BD. **Es un KVS**. Utilizado para data de corta duración. Se guarda en memoria y son pequeños pedazos de información. Se utiliza también cuando queremos acceder rápido a pequeños pedazos de información y que podemos llegar a perder información. Puede llegar a guardar snapshots en el disco por seguridad.
+
+## Sessions and JWT
+Tenemos 2 formas de hacerlo. La más vieja de todas es usar cookies, la más nueva es usar tokens.
+Cómo funciona con Cookies?
+Desde el browser se envía una petición al server como por ejemplo `POST /authenticate?username=Juan&password...`. Lo que hace el server es revisar si este usuario existe en su base de datos y si es así devuelve al cliente una respuesta 200 seteando en el mismo una cookie "session" con un string aleatorio. Este string aleatorio representa el browser en cuestión. Luego, con cada petición que haga el browser controlamos que se esté enviando siempre esta cookie para saber si es correcta la petición.
+Esto es statefull. En ambos lados tiene que guardarse la info de quién está logueado.
+
+Cómo funciona con tokens? En este caso JWT
+Un usuario se loguea, el browser envía `POST /authenticate?username=Juan&password...` al servidor, este revisa si existe el usuario, si está bien la password y en vez de devolver un 200 con una cookie en caso de encontrarlo, lo que hace es enviar un token (JWT), muy similar a un string ya que se encuentra serializado, y se guarda en el browser en vez de guardarse en una cookie. En la session store, local store entre otras opciones. Luego, con cada petición se envía este JWT y lo único que debe hacer el server es verificarlo, no hace falta que se comunique con BDs.
+Esto es stateless. No hace falta guardarse qué usuarios están logueados. Solo se decodifica el token y se asegura que sea válido.
+
+Utilizando tokens tenemos ciertas ventajas como autenticar usuarios de forma muy sencilla en distintas APIs, el token solo tiene que ser válido. Con cookies es posible pero mucho más complejo. Otra ventaja sería que funciona mucho mejor para plataformas mobiles, ya que usar cookies en estas plataformas es mucho más complejo.
+
+Hay mucho debate de cual es la mejor opción:
+dzone.com/articles/cookies-vs-tokens-the-definitive-guide
+stackoverflow.com/questions/17000835/token-authentication-vs-cookies
+scotch.io/bar-talk/why-jwts-suck-as-session-tokens
+
+*Podemos combinar ambas soluciones, guardando el JWT en una redis por ejemplo.*
+
+## AWS
+**EC2** basic server.
+**S3** Object storage service. Key or ID tiene acceso a un file. Cualquier tipo de archivo, sirve mucho para guardar imágenes.
+**Lambda** Le das una función y le decís cuando querés que la corra. Super escalable y rápido. Amazon te cobra cada vez que se ejecuta, no por tiempo. Podemos usar "Serverless" para deployar una lambda function desde command line en vez de usar su dashboard.
+**CloudFront** es una especie de CDN
+**DynamoDB** NoSQL super rápida. KVS.
+
+## Backend Performance
+
+### CDN
+Content Delivery Network. Cachea archivos en servers ubicados alrededor del mundo. El contenido es servido a los clientes desde el servidor más cercano al cliente. Cloudflare es el servicio de CDN de amazon.
+
+### GZIP
+Comprimimos los archivos para que pesen significativamente mucho menos. Son menos bytes que se envían por la red. La mayoría de los browsers soportan GZIP. Podemos comprimir casi cualquier tipo de archivo. NO hay razón para no hacerlo. Muchos servicios hoy en día lo hacen por defecto. Hay una mejor solución hoy en día, creada por Google, llamada Brotli, tiene cerca de los 20% de compresión más que GZIP. Todavía no está implementado por todos los browsers. Se puede ver en los headers "content-enconding: br".
+
+### Databases scaling
+1. Identificar queries ineficientes.
+2. Incrementar memoria.
+3. Escalar verticalmente. Delegamos algunas cosas a otras bases de datos como a un KVS por ejemplo.
+4. "Sharding". Es tener nuestra app distribuido en distintas partes, según las queries que hagamos vamos a buscarlo a un shard o al otro. Muy complejo de implementar. ElasticSearch (document storage) puede realizar esto.
+5. Más BDs. 
+6. Tipo de BD. Según las características y las necesidades podemos elegir una o la otra.
+
+### Caching
+CPUs, RAM y Discos. Los tres cuentan con formas de guardar información para obtenerla lo más pronto posible.
+CPUs tienen "registros", son las más rápidas pero de poca capacidad.
+RAM (Random access memory). Puede guardar mucha información en memoria, es muy rápida.
+Discos duros o SSD (más rápidos). Aún así son más lentos que las RAM (su información perdura).
+Hay muchísimas formas de implementar el caching en el desarrollo web.
+Ejemplo: CDNs cachean nuestros estáticos.
+En el server podemos cachear guardando en un KVS, en una variable en memoria etc.
+También podemos cachear en el cliente. Utilizando por ejemplo service workers.
+Del lado del servidor podemos utilizar los headers: max-age, etag entre otros para controlar manualmente como cacheamos los archivos.
+Cuando vemos el status 304 de un request, "not modified" es cuando el browser se fija en el ETAG del header, un hash autogenerado por express, con el cual nos daremos cuenta si el archivo cambia o no.
+
+https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/http-caching
+
+## Load Balancing
+Para servir los archivos podemos usar herramientas como Nginx o Apache, los cuales mediante cierta condifuración van a servir nuestros archivos según los requests que se hagan. Estas herramientas pueden usarse como load balancers. Lo que se hace es ante una petición, esta llega a un servidor Nginx y este decide a que servidor ir, supongamos que tenemos 3, Nginx elige el que esté más ocioso. Lo que puede hacer también es cachear las respuestas para no tener que ir al server otra vez.
+
+## CI/CD
+Continuous integration / Continuous Delivery
+Herramienta para mantener un orden en nuestra aplicación a medida que crece el equipo y la app misma. Para entregar software de calidad necesitamos de estos procesos. Asegurarnos que no tiene bugs, que está todo testeado o incluso que cumple con ciertos estándares.
+
+Continuous integration: Es la forma de tener organizado un repositorio compartido por varios developers, donde se realizarán PRs, con cada uno de estos puede correrse cosas automáticas como cove coverage, building y tests entre otras, podemos anticipar errores, mantener la calidad del código y ahorrarnos tiempo.
+
+Continuous delivery: es la práctica de mantener nuestro código deployable todo el tiempo.
+
+Continuous deployment: es la práctica de deployar automáticamente luego de que pasaron los tests, code coverage, building etc. No hay procesos manuales de subida.
+
+Herramientas: Jenkins, CircleCI, Bammbo y más.
