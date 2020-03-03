@@ -135,7 +135,7 @@ El this dentro de este saludar va a ser per1, el cual es un objeto con las carat
 
 --
 
-Hoisting: este mecanismo se encuentra dentro de la fase de creación. Se trata de mover las declaraciones de variables y/o funciones a arriba de todo de cada uno de los ambientes/scopes durante la compilación
+Hoisting: este mecanismo se encuentra dentro de la fase de creación. Se trata de "mover las declaraciones de variables y/o funciones a arriba de todo de cada uno de los ambientes/scopes durante la compilación".
 
 console.log("--1");
 console.log(teddy);
@@ -166,6 +166,19 @@ console.log(sayHello());
 var teddy = "chau";
 
 Todas estas variables y funciones son guardadas en la Memory Heap para tenerlas disponibles una vez comience a ejecutarse el código.
+
+*Lo que hace el motor de JS en realidad es*, cuando llega el script no ejecuta nada, sino que prepara la memoria con la data en el código.
+Cómo guarda en memoria difiere del tipo de variable o si es una función. Así las guarda:
+
+function -> referencia a la función
+var -> undefined
+let -> uninitialized
+const -> uninitialized
+
+Entonces, las funciones y las variables son guardadas en memoria para un execution context antes de ejecutar el código. A esto se le llama hoisting.
+Las `var` ya lo vimos, si llamamos a esta variable antes de que se defina el resultado es undefined.
+Pero si llamamos un let o const nos va a dar un error y es el de: ReferenceError. Es decir, todo lo que está antes de la definición de estas variables
+es la "temporal dead zone". Entonces la sentencia que dice "mover las declaraciones de variables y/o funciones a arriba de todo" no es cierta aunque lo parezca. Se trata en realidad del manejo de memoria.
 
 --
 
