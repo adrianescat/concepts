@@ -470,3 +470,71 @@ La impresión va a ser:
 // 2
 
 // 1
+
+## Generators
+Creamos una función generadora poniendo un * luego de _function_
+
+```javascript
+function* generatorFunction() { }
+```
+Estas funciones tienen un comportamiento diferente a las funciones de siempre.
+
+- Si las invocamos devuelven un _generator object_, el cual es un iterador.
+- Podemos usar la keyword `yield` dentro de una función generador para pausar la ejecución ahí.
+
+```javascript
+function* genFunc() {
+  yield 'Hola';
+  console.log(1);
+
+  yield 'medio';
+  console.log(2);
+
+  return 'done';
+}
+```
+
+Qué hace el _yield_? cada vez que ejecutamos esta función se pausa en el _yield_ que le sigue. La próxima vez que ejecutemos la función va a recordar donde se quedó y va a ejecutar desde ahí.
+
+El `generator object` (GO) contiene un método `next` (en la prototype chain). Este se usa para iterar la función generadora. Pero, para recordar el estado, vamos a necesitar guardar el GO en una variable.
+
+Si hago:
+
+```javascript
+const genObject = genFunc();
+genObject.next();
+// -> { value: 'Hola', done: false }
+```
+
+Value se llena con lo que se le hace `yield`.
+`done` será true una vez retorne un valor no 'yieldado'.
+
+```javascript
+genObject.next();
+// -> 1
+// -> { value: 'medio', done: false }
+```
+
+```javascript
+genObject.next();
+// -> 2
+// -> { value: undefined, done: true }
+```
+
+Ahí termina, en caso de querer iterarar nuevamente tendremos que generar otro `generator object`.
+
+Ahora, recordemos que es un iterador entonces podemos hacer cosas como:
+
+```javascript
+function* saludos() {
+  yield 'Hola';
+  yield 'Chau';
+}
+
+const genO = saludos();
+
+[...genO]
+//-> ['Hola', 'Chau']
+```
+
+Podemos también hacer un `for ..`.

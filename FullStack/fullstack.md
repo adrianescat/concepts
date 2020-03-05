@@ -251,3 +251,17 @@ Continuous delivery: es la práctica de mantener nuestro código deployable todo
 Continuous deployment: es la práctica de deployar automáticamente luego de que pasaron los tests, code coverage, building etc. No hay procesos manuales de subida.
 
 Herramientas: Jenkins, CircleCI, Bammbo y más.
+
+## SRE Site Reliability Engineering
+Segun Google, lo que hace SRE es lo que hacía hace un tiempo un equipo de operaciones. Pero ahora es un conjunto de software Engineers
+expertos que están predispuestos y tienen la habilidad de diseñar e implementar software automatizado para reemplazar el trabajo manual.
+Se manejan con tickets así se organizan y logran mantener el servicio estable y operable. Este equipo debería quedar con muy poco laburo operacional
+y enteramente dedicado al desarrollo. Porque el servicio en sí, corre y se repara automáticamente.
+Este equipo es responsable de: availability, latency, performance, efficiency, change management, monitoring, emergency response, and capacity planning of their service(s).
+El negocio debe definir el uptime o availability esperada. Si se desea estar 99.60%, el otro 0.40% es la cantidad de errores que tiene el servicio.
+- Utilizar Canaries antes de cualquier deploy masivo.
+- No siempre es lo mejor apuntar al 100%. Simplemente hay que definir el riesgo que se quiere a la innovación y la fiabilidad del sitio. El SLO nos ayuda a saber qué tantos releases podemos hacer.
+
+### SLO Service Level Objectives.
+definir objetivos como:
+- 99% (en 1 min) GET RPC calls completas en menos de 100ms
