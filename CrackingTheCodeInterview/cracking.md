@@ -271,7 +271,7 @@ Repasar:
 - https://developer.mozilla.org/es/docs/Web/JavaScript/Referencia/Objetos_globales/Map
 
 ### Data structures
-Collección de datos.
+Colección de datos.
 
 info que ayuda a entender cómo la PC guarda las estructuras de datos:
 - https://www.youtube.com/watch?v=fpnE6UAfbtU
@@ -378,7 +378,7 @@ Algoritmos estables vs inestables: _A sorting algorithm is said to be stable if 
 Usa la técnica de pivoteo, elige al azar un elemento como pivote y va comparando desde el inicio del array, si encuentra elementos que tienen que ir a la derecha de él, va desplazandolos a su derecha, desplazando también el número que estaba previamente a su izquierda y poniéndolo de donde se sacó el número que se movio a la derecha del pivote. Así sucesivamente hasta que no tenga más. Cuando llega ese momento, significa que el pivote está en su ubicación correcta. Ahí utiliza el mecanismo (como el Merge Sort) de "divide y ganarás". Forma 2 nuevas colecciones a los lados del pivote, y pivotea nuevamente en esas nuevas colecciones y así sucesivamente.
 Implementación del Quick Sort: https://repl.it/@AdrianE1/quickSort
 
-Quick Sort vs Merge Sort: Merge Sort en el peor de los casos, en cuanto a su tome complexity es mejor que el de Quick Sort, pero este último es mejor en cuanto a space complexity en el peor de los casos. Generalmente es uno de los más rápidos el Quick Sort en lineas generales, pero tiene algunos casos donde performa muy mal.
+Quick Sort vs Merge Sort: Merge Sort en el peor de los casos, en cuanto a su time complexity es mejor que el de Quick Sort, pero este último es mejor en cuanto a space complexity en el peor de los casos. Generalmente es uno de los más rápidos el Quick Sort en lineas generales, pero tiene algunos casos donde performa muy mal.
 
 Tenemos otros sorts como Radix y Counting. No realizan comparaciones. Pero no son los más utilizados.
 
